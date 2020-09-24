@@ -35,14 +35,6 @@ def greeting(hour,digitaldisplay):
 
     print(greeting + digitaldisplay)
 
-def servostep(servox,deltangle):
-    #Determine the angle needed for the
-    servox.angle(0)
-    time.sleep(.1) #delay for 
-    servox.angle(deltangle)
-    time.sleep(.1)
-    servox.angle(0)
-    return servox
 
 ######################################
 # Initial Setup
@@ -82,23 +74,23 @@ while(True):
     hour = int(digitalclock[0])
     minute = int(digitalclock[1])
     second = int(digitalclock[2])
-
     if loopcounter is 0:
         greeting(hour,digitaldisplay)
 
     if hour > 12:
         hour = hour -12
-
+  
     #IMPORTANT: ASSUME THAT THE INITIAL POSITION OF THE CLOCK IS 6:30 or 18:30
     #Determine the difference between the hours and minutes and the current time (which starts off at 6:30)
     #assume that hours wheel has 48 teeth, 4 per hour
     #assume that minute wheel has 60 teeth, 1 per minute
-    if hour > currenthour:
-        hoursteps = 4*(hour-currenthour) + math.floor(minute/15)
+    if hour >= currenthour:
+        hoursteps = 4*(hour-currenthour) + math.floor((minute-currentminute)/15)
     else:
-        hoursteps = 4*(hour+currenthour) + math.floor(minute/15)
+        hoursteps = 4*(hour+currenthour) + math.floor((minute-currentminute)/15)
 
     if minute > 30:
+        
         minutesteps = minute - currentminute
     else:
         minutesteps = minute + currentminute
@@ -108,17 +100,30 @@ while(True):
     angle1 = 30
     if hoursteps > 0:
         for i in range(hoursteps):
-            servo0 = servostep(servo0,angle0)
-            time.sleep(.5)
+             #Determine the angle needed for the
+            deltangle = 30
+            servo0.angle=0
+            time.sleep(.1) #delay for 
+            servo0.angle=deltangle
+            time.sleep(.1)
+            #servo0.angle=0
+            #time.sleep(.5)
+           
     if minutesteps > 0:
         for i in range(minutesteps):
-            servo1 = servostep(servo1,angle1)
-            time.sleep(.5)
+            deltangle = 30
+            servo1.angle=0
+            time.sleep(.1) #delay for 
+            servo1.angle=deltangle
+            time.sleep(.1)
+            servo1.angle=0
+            #time.sleep(.5)
+          
     loopcounter = loopcounter + 1
     currenthour = hour
     currentminute = minute
+   
     
-
 print("We completely" + str(loopcounter) + "loops to get the right time")
 
 #need to check the time again to adjust the minute hand after the servo actions finish
